@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+require('dotenv').config();
+
 const todoRouter = require('./src/routes/todoAppRoutes');
 const authRouter = require('./src/routes/authRoutes');
 // dung bien moi truong
-require('dotenv').config();
+
 const app = express();
 const port = process.env.PORT;
 app.use(cors());
