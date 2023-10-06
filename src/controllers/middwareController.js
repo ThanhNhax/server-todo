@@ -5,7 +5,6 @@ const middwareController = {
   checkToken: (req, res, next) => {
     // nhan token tu req gui len, dung split de lay
     const accessToken = req.headers.authorization.split(' ')[1];
-    console.log(accessToken);
     if (accessToken) {
       jwt.verify(accessToken, process.env.SECRRTKRY, (err, user) => {
         if (err) {
