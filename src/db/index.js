@@ -9,7 +9,7 @@ const db = mysql.createConnection({
 
 // open the mysql connection
 db.connect((err) => {
-  if (err) console.log('Ket noi CSDL khong thanh cong');
+  if (err) return console.log('Ket noi CSDL khong thanh cong');
   else console.log('Connected');
 });
 
