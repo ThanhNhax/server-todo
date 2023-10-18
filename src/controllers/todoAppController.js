@@ -8,6 +8,14 @@ exports.showAllTodos = (req, res) => {
     return res.status(200).json(data);
   });
 };
+exports.showTodosByUserId = (req, res) => {
+  const { userId } = req.params;
+  const q = 'SELECT * FROM todos where userid = ' + userId;
+  db.query(q, (error, data) => {
+    if (error) return res.status(500).json({ error });
+    return res.status(200).json(data);
+  });
+};
 
 // create todo
 exports.createTodo = (req, res) => {
