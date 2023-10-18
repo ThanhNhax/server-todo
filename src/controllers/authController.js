@@ -1,28 +1,33 @@
 const db = require('../db/index');
 const bcrypt = require('bcrypt');
+const e = require('express');
 
 const jwt = require('jsonwebtoken');
 
 class AuthController {
   register(req, res) {
-    const { email, password, name } = req.body;
-    //  hash: bam cai password ra
-    bcrypt.hash(password, process.env.SALTROUNDS, (err, hash) => {
-      // Store hash in your password DB.
-      if (err) return res.status(500).json({ error: err });
-      // query : db để tạo users
-      const q = `insert into users(email, password,name) values('${email}','${hash}','${name}')`;
+    try {
+      const { email, password, name } = req.body;
+      console.log(email, password, name);
+      //  hash: bam cai password ra
+
+      const salt = bcrypt.genSaltSync(parseInt(process.env.SALTROUNDS));
+      const hashedPassword = bcrypt.hashSync(password, salt);
+      const q = `insert into users(email, password,name) values('${email}','${hashedPassword}','${name}')`;
       db.query(q, (err, result) => {
         if (err) return res.status(500).json({ error: err });
         return res
           .status(200)
           .json({ result, message: 'Created successfully!' });
       });
-    });
+    } catch (e) {
+      return res.status(500).json({ error: 'Error handle hash password' });
+    }
   }
 
   login(req, res) {
     const { email, password } = req.body;
+    console.log(email, password);
     //hash password
     //query db
     const q = `select * from users
@@ -41,7 +46,12 @@ class AuthController {
             { email: result[0].email },
             process.env.SECRRTKRY
           );
-          return res.status(200).json({ token, email: result[0].email });
+          const { password, ...rest } = result[0];
+          const resDate = {
+            token: token,
+            ...rest,
+          };
+          return res.status(200).json(resDate);
         }
       });
     });

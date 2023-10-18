@@ -2,7 +2,7 @@ const db = require('../db');
 
 // show all todos
 exports.showAllTodos = (req, res) => {
-  const q = 'SELECT * FROM todo';
+  const q = 'SELECT * FROM todos';
   db.query(q, (error, data) => {
     if (error) return res.status(500).json({ error });
     return res.status(200).json(data);
@@ -11,13 +11,14 @@ exports.showAllTodos = (req, res) => {
 
 // create todo
 exports.createTodo = (req, res) => {
-  const { title, isCompleted } = req.body;
+  const { title, isCompleted, userId } = req.body;
+  console.log(title, isCompleted, userId);
   // truyen firstName, lastName thi nho cho vao dai '' chuyen kieu varchar trong mysql
   //   let q = `INSERT INTO todos (first_name, last_name)
   //             VALUES('${first_name}','${last_name}')`;
 
-  const q = `INSERT INTO todo SET ?`;
-  db.query(q, { title, is_completed: isCompleted }, (error) => {
+  const q = `INSERT INTO todos SET ?`;
+  db.query(q, { title, is_completed: isCompleted, userId }, (error) => {
     if (error) return res.status(500).json({ error });
     return res.status(200).json('INSERT INTO successfully!');
   });
@@ -27,7 +28,7 @@ exports.createTodo = (req, res) => {
 exports.deleteTodoById = (req, res) => {
   const { id } = req.params;
   console.log({ id });
-  const q = `delete from todo
+  const q = `delete from todos
   where id =${id}`;
   db.query(q, (error, data) => {
     if (error) return res.status(500).json({ error });
@@ -39,8 +40,8 @@ exports.deleteTodoById = (req, res) => {
 exports.updateTodoById = (req, res) => {
   const { id } = req.params;
   const { is_completed, title } = req.body;
-  console.log("updateTodoById: ",is_completed, title);
-  const q = `UPDATE todo 
+  console.log('updateTodoById: ', is_completed, title);
+  const q = `UPDATE todos 
   set is_completed =${is_completed} ,
   title = '${title}'
   where id = ${id}`;
